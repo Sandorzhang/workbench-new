@@ -3,6 +3,7 @@ import { AuthProvider } from '@/lib/auth';
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AppLayout } from "@/components/app-layout";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,7 +33,9 @@ export default function RootLayout({
       >
         <MswInitializer />
         <AuthProvider>
-          {children}
+          <AppLayout>
+            {children}
+          </AppLayout>
         </AuthProvider>
         <Toaster />
       </body>

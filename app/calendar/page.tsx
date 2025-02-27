@@ -310,248 +310,219 @@ export default function CalendarPage() {
   ];
   
   return (
-    <>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mr-2 h-4" />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="/dashboard">
-                      教育管理平台
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>我的日历</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+    <div className="max-w-7xl mx-auto w-full">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">我的日历</h2>
+          <p className="mt-1 text-sm text-gray-500">管理您的课程、会议和学校活动</p>
+        </div>
+        
+        <div className="mt-4 md:mt-0 flex items-center space-x-2">
+          <Button variant="outline" size="sm" onClick={goToPreviousMonth}>
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="sm" onClick={goToToday}>
+            今天
+          </Button>
+          <Button variant="outline" size="sm" onClick={goToNextMonth}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+          <Button variant="default" size="sm" className="ml-2">
+            <Plus className="h-4 w-4 mr-1" />
+            添加事件
+          </Button>
+        </div>
+      </div>
+      
+      {/* 错误提示 */}
+      {error && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md mb-6">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
             </div>
-          </header>
-          
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            <div className="max-w-7xl mx-auto w-full">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">我的日历</h2>
-                  <p className="mt-1 text-sm text-gray-500">管理您的课程、会议和学校活动</p>
+            <div className="ml-3">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* 日历视图 */}
+        <div className="md:col-span-2">
+          <Card className="shadow-sm border border-gray-100">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl">
+                  {getMonthName(currentMonth)} {currentYear}
+                </CardTitle>
+                <div className="flex items-center space-x-2">
+                  <Badge variant="outline" className="text-xs">
+                    {events.length} 个事件
+                  </Badge>
                 </div>
-                
-                <div className="mt-4 md:mt-0 flex items-center space-x-2">
-                  <Button variant="outline" size="sm" onClick={goToPreviousMonth}>
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={goToToday}>
-                    今天
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={goToNextMonth}>
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                  <Button variant="default" size="sm" className="ml-2">
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* 星期标题 */}
+              <div className="grid grid-cols-7 mb-2">
+                {['日', '一', '二', '三', '四', '五', '六'].map((day, index) => (
+                  <div 
+                    key={index} 
+                    className="text-center py-2 text-sm font-medium text-gray-500"
+                  >
+                    {day}
+                  </div>
+                ))}
+              </div>
+              
+              {/* 日历网格 */}
+              <div className="grid grid-cols-7 gap-1">
+                {calendarDays.map((day, index) => (
+                  <div 
+                    key={index}
+                    onClick={() => handleDateClick(day.date)}
+                    className={cn(
+                      "h-24 p-1 border rounded-md relative cursor-pointer transition-colors",
+                      day.isCurrentMonth ? "bg-white" : "bg-gray-50 text-gray-400",
+                      isToday(day.date) && "border-primary",
+                      isSelected(day.date) && "ring-2 ring-primary ring-offset-1",
+                      !day.isCurrentMonth && "hover:bg-gray-100",
+                      day.isCurrentMonth && "hover:bg-gray-50"
+                    )}
+                  >
+                    <div className="flex justify-between items-start">
+                      <span className={cn(
+                        "text-sm font-medium",
+                        isToday(day.date) && "bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center"
+                      )}>
+                        {day.day}
+                      </span>
+                      {hasEvents(day.date) && (
+                        <Badge variant="outline" className="text-[10px] px-1 py-0">
+                          {getEventsForDate(day.date).length}
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    {/* 事件指示器 */}
+                    <div className="mt-1 space-y-1 overflow-hidden max-h-16">
+                      {getEventsForDate(day.date).slice(0, 2).map((event, eventIndex) => (
+                        <div 
+                          key={eventIndex}
+                          className={cn(
+                            "text-[10px] px-1 py-0.5 rounded truncate",
+                            eventTypeConfig[event.type]?.bgColor || "bg-gray-100",
+                            eventTypeConfig[event.type]?.color || "text-gray-600"
+                          )}
+                        >
+                          {event.title}
+                        </div>
+                      ))}
+                      {getEventsForDate(day.date).length > 2 && (
+                        <div className="text-[10px] text-gray-500 pl-1">
+                          +{getEventsForDate(day.date).length - 2} 更多
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* 事件列表 */}
+        <div className="md:col-span-1">
+          <Card className="h-full shadow-sm border border-gray-100">
+            <CardHeader>
+              <CardTitle className="text-lg">
+                {selectedDate ? formatDate(selectedDate) : '今日事件'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="flex justify-center py-10">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : selectedDateEvents.length > 0 ? (
+                <div className="space-y-4">
+                  {selectedDateEvents.map((event) => (
+                    <div 
+                      key={event.id} 
+                      className="border rounded-lg p-3 hover:shadow-sm transition-shadow cursor-pointer"
+                      onClick={() => handleEventClick(event)}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-medium">{event.title}</h4>
+                          <div className="flex items-center mt-1 text-sm text-gray-500">
+                            <Clock className="h-3 w-3 mr-1" />
+                            <span>{event.startTime} - {event.endTime}</span>
+                          </div>
+                          {event.location && (
+                            <div className="flex items-center mt-1 text-sm text-gray-500">
+                              <MapPin className="h-3 w-3 mr-1" />
+                              <span>{event.location}</span>
+                            </div>
+                          )}
+                          {event.participants && event.participants.length > 0 && (
+                            <div className="flex items-center mt-1 text-sm text-gray-500">
+                              <Users className="h-3 w-3 mr-1" />
+                              <span>{event.participants.join(', ')}</span>
+                            </div>
+                          )}
+                        </div>
+                        <Badge className={cn(
+                          "ml-2",
+                          eventTypeConfig[event.type]?.bgColor || "bg-gray-100",
+                          eventTypeConfig[event.type]?.color || "text-gray-600"
+                        )}>
+                          {event.type === 'meeting' && '会议'}
+                          {event.type === 'class' && '课程'}
+                          {event.type === 'exam' && '考试'}
+                          {event.type === 'activity' && '活动'}
+                          {event.type === 'holiday' && '假期'}
+                          {event.type === 'classroom-impression' && '课堂印象'}
+                          {!['meeting', 'class', 'exam', 'activity', 'holiday', 'classroom-impression'].includes(event.type) && event.type}
+                        </Badge>
+                      </div>
+                      {event.description && (
+                        <p className="mt-2 text-sm text-gray-600">
+                          {event.type === 'classroom-impression' 
+                            ? event.description.split('recordId:')[0].trim() 
+                            : event.description}
+                        </p>
+                      )}
+                      {event.type === 'classroom-impression' && (
+                        <div className="mt-2">
+                          <Button variant="outline" size="sm">
+                            查看课堂时光机
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-10">
+                  <CalendarIcon className="h-10 w-10 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-500">
+                    {selectedDate ? '该日期没有安排事件' : '今天没有安排事件'}
+                  </p>
+                  <Button variant="outline" size="sm" className="mt-4">
                     <Plus className="h-4 w-4 mr-1" />
                     添加事件
                   </Button>
                 </div>
-              </div>
-              
-              {/* 错误提示 */}
-              {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md mb-6">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm text-red-700">{error}</p>
-                    </div>
-                  </div>
-                </div>
               )}
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* 日历视图 */}
-                <div className="md:col-span-2">
-                  <Card className="shadow-sm border border-gray-100">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-xl">
-                          {getMonthName(currentMonth)} {currentYear}
-                        </CardTitle>
-                        <div className="flex items-center space-x-2">
-                          <Badge variant="outline" className="text-xs">
-                            {events.length} 个事件
-                          </Badge>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      {/* 星期标题 */}
-                      <div className="grid grid-cols-7 mb-2">
-                        {['日', '一', '二', '三', '四', '五', '六'].map((day, index) => (
-                          <div 
-                            key={index} 
-                            className="text-center py-2 text-sm font-medium text-gray-500"
-                          >
-                            {day}
-                          </div>
-                        ))}
-                      </div>
-                      
-                      {/* 日历网格 */}
-                      <div className="grid grid-cols-7 gap-1">
-                        {calendarDays.map((day, index) => (
-                          <div 
-                            key={index}
-                            onClick={() => handleDateClick(day.date)}
-                            className={cn(
-                              "h-24 p-1 border rounded-md relative cursor-pointer transition-colors",
-                              day.isCurrentMonth ? "bg-white" : "bg-gray-50 text-gray-400",
-                              isToday(day.date) && "border-primary",
-                              isSelected(day.date) && "ring-2 ring-primary ring-offset-1",
-                              !day.isCurrentMonth && "hover:bg-gray-100",
-                              day.isCurrentMonth && "hover:bg-gray-50"
-                            )}
-                          >
-                            <div className="flex justify-between items-start">
-                              <span className={cn(
-                                "text-sm font-medium",
-                                isToday(day.date) && "bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center"
-                              )}>
-                                {day.day}
-                              </span>
-                              {hasEvents(day.date) && (
-                                <Badge variant="outline" className="text-[10px] px-1 py-0">
-                                  {getEventsForDate(day.date).length}
-                                </Badge>
-                              )}
-                            </div>
-                            
-                            {/* 事件指示器 */}
-                            <div className="mt-1 space-y-1 overflow-hidden max-h-16">
-                              {getEventsForDate(day.date).slice(0, 2).map((event, eventIndex) => (
-                                <div 
-                                  key={eventIndex}
-                                  className={cn(
-                                    "text-[10px] px-1 py-0.5 rounded truncate",
-                                    eventTypeConfig[event.type]?.bgColor || "bg-gray-100",
-                                    eventTypeConfig[event.type]?.color || "text-gray-600"
-                                  )}
-                                >
-                                  {event.title}
-                                </div>
-                              ))}
-                              {getEventsForDate(day.date).length > 2 && (
-                                <div className="text-[10px] text-gray-500 pl-1">
-                                  +{getEventsForDate(day.date).length - 2} 更多
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-                
-                {/* 事件列表 */}
-                <div className="md:col-span-1">
-                  <Card className="h-full shadow-sm border border-gray-100">
-                    <CardHeader>
-                      <CardTitle className="text-lg">
-                        {selectedDate ? formatDate(selectedDate) : '今日事件'}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {isLoading ? (
-                        <div className="flex justify-center py-10">
-                          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                        </div>
-                      ) : selectedDateEvents.length > 0 ? (
-                        <div className="space-y-4">
-                          {selectedDateEvents.map((event) => (
-                            <div 
-                              key={event.id} 
-                              className="border rounded-lg p-3 hover:shadow-sm transition-shadow cursor-pointer"
-                              onClick={() => handleEventClick(event)}
-                            >
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <h4 className="font-medium">{event.title}</h4>
-                                  <div className="flex items-center mt-1 text-sm text-gray-500">
-                                    <Clock className="h-3 w-3 mr-1" />
-                                    <span>{event.startTime} - {event.endTime}</span>
-                                  </div>
-                                  {event.location && (
-                                    <div className="flex items-center mt-1 text-sm text-gray-500">
-                                      <MapPin className="h-3 w-3 mr-1" />
-                                      <span>{event.location}</span>
-                                    </div>
-                                  )}
-                                  {event.participants && event.participants.length > 0 && (
-                                    <div className="flex items-center mt-1 text-sm text-gray-500">
-                                      <Users className="h-3 w-3 mr-1" />
-                                      <span>{event.participants.join(', ')}</span>
-                                    </div>
-                                  )}
-                                </div>
-                                <Badge className={cn(
-                                  "ml-2",
-                                  eventTypeConfig[event.type]?.bgColor || "bg-gray-100",
-                                  eventTypeConfig[event.type]?.color || "text-gray-600"
-                                )}>
-                                  {event.type === 'meeting' && '会议'}
-                                  {event.type === 'class' && '课程'}
-                                  {event.type === 'exam' && '考试'}
-                                  {event.type === 'activity' && '活动'}
-                                  {event.type === 'holiday' && '假期'}
-                                  {event.type === 'classroom-impression' && '课堂印象'}
-                                  {!['meeting', 'class', 'exam', 'activity', 'holiday', 'classroom-impression'].includes(event.type) && event.type}
-                                </Badge>
-                              </div>
-                              {event.description && (
-                                <p className="mt-2 text-sm text-gray-600">
-                                  {event.type === 'classroom-impression' 
-                                    ? event.description.split('recordId:')[0].trim() 
-                                    : event.description}
-                                </p>
-                              )}
-                              {event.type === 'classroom-impression' && (
-                                <div className="mt-2">
-                                  <Button variant="outline" size="sm">
-                                    查看课堂时光机
-                                  </Button>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center py-10">
-                          <CalendarIcon className="h-10 w-10 text-gray-300 mx-auto mb-3" />
-                          <p className="text-gray-500">
-                            {selectedDate ? '该日期没有安排事件' : '今天没有安排事件'}
-                          </p>
-                          <Button variant="outline" size="sm" className="mt-4">
-                            <Plus className="h-4 w-4 mr-1" />
-                            添加事件
-                          </Button>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
-    </>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 }

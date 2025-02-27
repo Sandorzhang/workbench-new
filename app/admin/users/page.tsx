@@ -345,329 +345,302 @@ export default function AdminUsersPage() {
   };
   
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/dashboard">
-                    工作台
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>师生信息管理</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="max-w-7xl mx-auto w-full">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">师生信息管理</h2>
-                <p className="mt-1 text-sm text-gray-500">管理教师和学生的基本信息</p>
-              </div>
-              
-              <div className="mt-4 md:mt-0 flex items-center space-x-2">
-                <Button variant="outline" size="sm" onClick={handleExport}>
-                  <Download className="h-4 w-4 mr-1" />
-                  导出
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleImport}>
-                  <Upload className="h-4 w-4 mr-1" />
-                  导入
-                </Button>
-                <Button variant="default" size="sm" onClick={handleAdd}>
-                  <UserPlus className="h-4 w-4 mr-1" />
-                  添加
-                </Button>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-1 max-w-sm">
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-                    <Input
-                      placeholder="搜索..."
-                      className="pl-8"
-                      value={searchQuery}
-                      onChange={(e) => handleSearch(e.target.value)}
-                    />
-                  </div>
-                </div>
-                
-                <Tabs defaultValue="teachers" className="flex-1" onValueChange={setActiveTab}>
-                  <TabsList>
-                    <TabsTrigger value="teachers">教师管理</TabsTrigger>
-                    <TabsTrigger value="students">学生管理</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </div>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    {activeTab === 'teachers' ? '教师列表' : '学生列表'}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {activeTab === 'teachers' ? (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>姓名</TableHead>
-                          <TableHead>性别</TableHead>
-                          <TableHead>年龄</TableHead>
-                          <TableHead>学科</TableHead>
-                          <TableHead>班级</TableHead>
-                          <TableHead>职称</TableHead>
-                          <TableHead>联系电话</TableHead>
-                          <TableHead>邮箱</TableHead>
-                          <TableHead>状态</TableHead>
-                          <TableHead className="text-right">操作</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {(filteredData as Teacher[]).map((teacher) => (
-                          <TableRow key={teacher.id}>
-                            <TableCell>{teacher.name}</TableCell>
-                            <TableCell>{teacher.gender}</TableCell>
-                            <TableCell>{teacher.age}</TableCell>
-                            <TableCell>{teacher.subject}</TableCell>
-                            <TableCell>{teacher.class}</TableCell>
-                            <TableCell>{teacher.title}</TableCell>
-                            <TableCell>{teacher.phone}</TableCell>
-                            <TableCell>{teacher.email}</TableCell>
-                            <TableCell>
-                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                                {teacher.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <Button variant="ghost" size="sm" onClick={() => handleEdit(teacher.id)}>
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm" onClick={() => handleDelete(teacher.id)}>
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  ) : (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>姓名</TableHead>
-                          <TableHead>性别</TableHead>
-                          <TableHead>年龄</TableHead>
-                          <TableHead>年级</TableHead>
-                          <TableHead>班级</TableHead>
-                          <TableHead>学号</TableHead>
-                          <TableHead>监护人</TableHead>
-                          <TableHead>联系电话</TableHead>
-                          <TableHead>状态</TableHead>
-                          <TableHead className="text-right">操作</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {(filteredData as Student[]).map((student) => (
-                          <TableRow key={student.id}>
-                            <TableCell>{student.name}</TableCell>
-                            <TableCell>{student.gender}</TableCell>
-                            <TableCell>{student.age}</TableCell>
-                            <TableCell>{student.grade}</TableCell>
-                            <TableCell>{student.class}</TableCell>
-                            <TableCell>{student.studentId}</TableCell>
-                            <TableCell>{student.guardian}</TableCell>
-                            <TableCell>{student.phone}</TableCell>
-                            <TableCell>
-                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                                {student.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <Button variant="ghost" size="sm" onClick={() => handleEdit(student.id)}>
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm" onClick={() => handleDelete(student.id)}>
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-            
-            {/* 添加/编辑对话框 */}
-            <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingUser ? '编辑' : '添加'}{activeTab === 'teachers' ? '教师' : '学生'}
-                  </DialogTitle>
-                  <DialogDescription>
-                    请填写{activeTab === 'teachers' ? '教师' : '学生'}的基本信息。
-                  </DialogDescription>
-                </DialogHeader>
-                
-                <form onSubmit={handleSubmit}>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">姓名</label>
-                        <Input
-                          placeholder="请输入姓名"
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">性别</label>
-                        <Select
-                          value={formData.gender}
-                          onValueChange={(value) => setFormData({ ...formData, gender: value })}
-                          required
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="请选择性别" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="男">男</SelectItem>
-                            <SelectItem value="女">女</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">年龄</label>
-                        <Input
-                          type="number"
-                          placeholder="请输入年龄"
-                          value={formData.age}
-                          onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">
-                          {activeTab === 'teachers' ? '学科' : '年级'}
-                        </label>
-                        <Input
-                          placeholder={`请输入${activeTab === 'teachers' ? '学科' : '年级'}`}
-                          value={activeTab === 'teachers' ? formData.subject : formData.grade}
-                          onChange={(e) => setFormData({
-                            ...formData,
-                            [activeTab === 'teachers' ? 'subject' : 'grade']: e.target.value
-                          })}
-                          required
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">班级</label>
-                        <Input
-                          placeholder="请输入班级"
-                          value={formData.class}
-                          onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">
-                          {activeTab === 'teachers' ? '职称' : '学号'}
-                        </label>
-                        <Input
-                          placeholder={`请输入${activeTab === 'teachers' ? '职称' : '学号'}`}
-                          value={activeTab === 'teachers' ? formData.title : formData.studentId}
-                          onChange={(e) => setFormData({
-                            ...formData,
-                            [activeTab === 'teachers' ? 'title' : 'studentId']: e.target.value
-                          })}
-                          required
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">联系电话</label>
-                        <Input
-                          placeholder="请输入联系电话"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">
-                          {activeTab === 'teachers' ? '邮箱' : '监护人'}
-                        </label>
-                        <Input
-                          placeholder={`请输入${activeTab === 'teachers' ? '邮箱' : '监护人'}`}
-                          value={activeTab === 'teachers' ? formData.email : formData.guardian}
-                          onChange={(e) => setFormData({
-                            ...formData,
-                            [activeTab === 'teachers' ? 'email' : 'guardian']: e.target.value
-                          })}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <DialogFooter>
-                    <Button variant="outline" type="button" onClick={() => setShowAddDialog(false)}>
-                      取消
-                    </Button>
-                    <Button type="submit">确认</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
-            
-            {/* 删除确认对话框 */}
-            <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>确认删除</DialogTitle>
-                  <DialogDescription>
-                    您确定要删除这条记录吗？此操作不可撤销。
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
-                    取消
-                  </Button>
-                  <Button variant="destructive" onClick={confirmDelete}>
-                    确认删除
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
+    <div className="max-w-7xl mx-auto w-full">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">师生信息管理</h2>
+          <p className="mt-1 text-sm text-gray-500">管理教师和学生的基本信息</p>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+        
+        <div className="mt-4 md:mt-0 flex items-center space-x-2">
+          <Button variant="outline" size="sm" onClick={handleExport}>
+            <Download className="h-4 w-4 mr-1" />
+            导出
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleImport}>
+            <Upload className="h-4 w-4 mr-1" />
+            导入
+          </Button>
+          <Button variant="default" size="sm" onClick={handleAdd}>
+            <UserPlus className="h-4 w-4 mr-1" />
+            添加
+          </Button>
+        </div>
+      </div>
+      
+      <div className="space-y-4">
+        <div className="flex items-center space-x-4">
+          <div className="flex-1 max-w-sm">
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+              <Input
+                placeholder="搜索..."
+                className="pl-8"
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <Tabs defaultValue="teachers" className="flex-1" onValueChange={setActiveTab}>
+            <TabsList>
+              <TabsTrigger value="teachers">教师管理</TabsTrigger>
+              <TabsTrigger value="students">学生管理</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">
+              {activeTab === 'teachers' ? '教师列表' : '学生列表'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {activeTab === 'teachers' ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>姓名</TableHead>
+                    <TableHead>性别</TableHead>
+                    <TableHead>年龄</TableHead>
+                    <TableHead>学科</TableHead>
+                    <TableHead>班级</TableHead>
+                    <TableHead>职称</TableHead>
+                    <TableHead>联系电话</TableHead>
+                    <TableHead>邮箱</TableHead>
+                    <TableHead>状态</TableHead>
+                    <TableHead className="text-right">操作</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(filteredData as Teacher[]).map((teacher) => (
+                    <TableRow key={teacher.id}>
+                      <TableCell>{teacher.name}</TableCell>
+                      <TableCell>{teacher.gender}</TableCell>
+                      <TableCell>{teacher.age}</TableCell>
+                      <TableCell>{teacher.subject}</TableCell>
+                      <TableCell>{teacher.class}</TableCell>
+                      <TableCell>{teacher.title}</TableCell>
+                      <TableCell>{teacher.phone}</TableCell>
+                      <TableCell>{teacher.email}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          {teacher.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(teacher.id)}>
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleDelete(teacher.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>姓名</TableHead>
+                    <TableHead>性别</TableHead>
+                    <TableHead>年龄</TableHead>
+                    <TableHead>年级</TableHead>
+                    <TableHead>班级</TableHead>
+                    <TableHead>学号</TableHead>
+                    <TableHead>监护人</TableHead>
+                    <TableHead>联系电话</TableHead>
+                    <TableHead>状态</TableHead>
+                    <TableHead className="text-right">操作</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(filteredData as Student[]).map((student) => (
+                    <TableRow key={student.id}>
+                      <TableCell>{student.name}</TableCell>
+                      <TableCell>{student.gender}</TableCell>
+                      <TableCell>{student.age}</TableCell>
+                      <TableCell>{student.grade}</TableCell>
+                      <TableCell>{student.class}</TableCell>
+                      <TableCell>{student.studentId}</TableCell>
+                      <TableCell>{student.guardian}</TableCell>
+                      <TableCell>{student.phone}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          {student.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(student.id)}>
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleDelete(student.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* 添加/编辑对话框 */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingUser ? '编辑' : '添加'}{activeTab === 'teachers' ? '教师' : '学生'}
+            </DialogTitle>
+            <DialogDescription>
+              请填写{activeTab === 'teachers' ? '教师' : '学生'}的基本信息。
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">姓名</label>
+                  <Input
+                    placeholder="请输入姓名"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">性别</label>
+                  <Select
+                    value={formData.gender}
+                    onValueChange={(value) => setFormData({ ...formData, gender: value })}
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="请选择性别" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="男">男</SelectItem>
+                      <SelectItem value="女">女</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">年龄</label>
+                  <Input
+                    type="number"
+                    placeholder="请输入年龄"
+                    value={formData.age}
+                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {activeTab === 'teachers' ? '学科' : '年级'}
+                  </label>
+                  <Input
+                    placeholder={`请输入${activeTab === 'teachers' ? '学科' : '年级'}`}
+                    value={activeTab === 'teachers' ? formData.subject : formData.grade}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      [activeTab === 'teachers' ? 'subject' : 'grade']: e.target.value
+                    })}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">班级</label>
+                  <Input
+                    placeholder="请输入班级"
+                    value={formData.class}
+                    onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {activeTab === 'teachers' ? '职称' : '学号'}
+                  </label>
+                  <Input
+                    placeholder={`请输入${activeTab === 'teachers' ? '职称' : '学号'}`}
+                    value={activeTab === 'teachers' ? formData.title : formData.studentId}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      [activeTab === 'teachers' ? 'title' : 'studentId']: e.target.value
+                    })}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">联系电话</label>
+                  <Input
+                    placeholder="请输入联系电话"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {activeTab === 'teachers' ? '邮箱' : '监护人'}
+                  </label>
+                  <Input
+                    placeholder={`请输入${activeTab === 'teachers' ? '邮箱' : '监护人'}`}
+                    value={activeTab === 'teachers' ? formData.email : formData.guardian}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      [activeTab === 'teachers' ? 'email' : 'guardian']: e.target.value
+                    })}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" type="button" onClick={() => setShowAddDialog(false)}>
+                取消
+              </Button>
+              <Button type="submit">确认</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      
+      {/* 删除确认对话框 */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>确认删除</DialogTitle>
+            <DialogDescription>
+              您确定要删除这条记录吗？此操作不可撤销。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+              取消
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              确认删除
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 } 

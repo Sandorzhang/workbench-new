@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -431,175 +430,148 @@ export default function UnitTeachingDesignPage() {
   };
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/dashboard">
-                    工作台
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>单元教学设计</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="max-w-7xl mx-auto w-full">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">单元教学设计</h2>
-                <p className="mt-1 text-sm text-gray-500">管理和创建单元教学设计方案</p>
-              </div>
-              
-              <div className="mt-4 md:mt-0 flex items-center space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => window.location.href = '/dashboard'}
-                >
-                  <LayoutDashboard className="mr-2 h-4 w-4" />
-                  返回工作台
-                </Button>
-                <Button size="sm" className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
-                  <Plus className="mr-2 h-4 w-4" />
-                  新建设计
-                </Button>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <div className="p-6">
-                <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 space-x-0 md:space-x-4 mb-6">
-                  <div className="flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <Input
-                        placeholder="搜索单元教学设计..."
-                        className="pl-10 w-full md:max-w-[400px]"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button variant="outline" size="sm" className="border-dashed">
-                      <Filter className="mr-2 h-4 w-4" />
-                      筛选
-                    </Button>
-                    <Button variant="outline" size="sm" className="border-dashed">
-                      <SlidersHorizontal className="mr-2 h-4 w-4" />
-                      排序
-                    </Button>
-                    <Separator orientation="vertical" className="h-6" />
-                    <Button variant="outline" size="sm" className="border-dashed">
-                      <Upload className="mr-2 h-4 w-4" />
-                      导入
-                    </Button>
-                    <Button variant="outline" size="sm" className="border-dashed">
-                      <Download className="mr-2 h-4 w-4" />
-                      导出
-                    </Button>
-                  </div>
-                </div>
-
-                <Tabs defaultValue="all" className="space-y-4">
-                  <TabsList className="bg-muted/5 p-1">
-                    <TabsTrigger value="all" className="data-[state=active]:bg-white">全部设计</TabsTrigger>
-                    <TabsTrigger value="draft" className="data-[state=active]:bg-white">草稿箱</TabsTrigger>
-                    <TabsTrigger value="published" className="data-[state=active]:bg-white">已发布</TabsTrigger>
-                    <TabsTrigger value="archived" className="data-[state=active]:bg-white">已归档</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="all" className="space-y-4">
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                      {mockDesigns.map((design) => (
-                        <Card 
-                          key={design.id}
-                          className="group border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer overflow-hidden"
-                          onClick={() => setSelectedDesign(design)}
-                        >
-                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <div className="space-y-1">
-                              <CardTitle className="text-sm font-medium">
-                                {design.subject} - {design.unit}
-                              </CardTitle>
-                              {getStatusBadge(design.status)}
-                            </div>
-                            <BookOpen className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                          </CardHeader>
-                          <CardContent>
-                            <div className="space-y-3">
-                              <div>
-                                <div className="text-xl font-bold group-hover:text-primary transition-colors">
-                                  {design.title}
-                                </div>
-                                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                                  {design.description}
-                                </p>
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <div className="flex items-center justify-between text-sm">
-                                  <span className="text-muted-foreground">完成进度</span>
-                                  <span className="font-medium">{design.progress}%</span>
-                                </div>
-                                <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                                  <div 
-                                    className={`h-full ${getProgressColor(design.progress)} transition-all duration-300`}
-                                    style={{ width: `${design.progress}%` }}
-                                  />
-                                </div>
-                              </div>
-
-                              <div className="pt-2 flex items-center justify-between">
-                                <span className="text-xs text-muted-foreground">
-                                  最后修改：{design.lastModified}
-                                </span>
-                                <Button variant="ghost" size="sm" className="hover:bg-primary/5">
-                                  查看详情 →
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="draft" className="space-y-4">
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                      {/* 草稿箱内容 */}
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="published" className="space-y-4">
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                      {/* 已发布内容 */}
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="archived" className="space-y-4">
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                      {/* 已归档内容 */}
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-            </div>
-          </div>
+    <div className="max-w-7xl mx-auto w-full">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">单元教学设计</h2>
+          <p className="mt-1 text-sm text-gray-500">管理和创建单元教学设计方案</p>
         </div>
-      </SidebarInset>
+        
+        <div className="mt-4 md:mt-0 flex items-center space-x-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => window.location.href = '/dashboard'}
+          >
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+            返回工作台
+          </Button>
+          <Button size="sm" className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
+            <Plus className="mr-2 h-4 w-4" />
+            新建设计
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+        <div className="p-6">
+          <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 space-x-0 md:space-x-4 mb-6">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="搜索单元教学设计..."
+                  className="pl-10 w-full md:max-w-[400px]"
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline" size="sm" className="border-dashed">
+                <Filter className="mr-2 h-4 w-4" />
+                筛选
+              </Button>
+              <Button variant="outline" size="sm" className="border-dashed">
+                <SlidersHorizontal className="mr-2 h-4 w-4" />
+                排序
+              </Button>
+              <Separator orientation="vertical" className="h-6" />
+              <Button variant="outline" size="sm" className="border-dashed">
+                <Upload className="mr-2 h-4 w-4" />
+                导入
+              </Button>
+              <Button variant="outline" size="sm" className="border-dashed">
+                <Download className="mr-2 h-4 w-4" />
+                导出
+              </Button>
+            </div>
+          </div>
+
+          <Tabs defaultValue="all" className="space-y-4">
+            <TabsList className="bg-muted/5 p-1">
+              <TabsTrigger value="all" className="data-[state=active]:bg-white">全部设计</TabsTrigger>
+              <TabsTrigger value="draft" className="data-[state=active]:bg-white">草稿箱</TabsTrigger>
+              <TabsTrigger value="published" className="data-[state=active]:bg-white">已发布</TabsTrigger>
+              <TabsTrigger value="archived" className="data-[state=active]:bg-white">已归档</TabsTrigger>
+            </TabsList>
+            <TabsContent value="all" className="space-y-4">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {mockDesigns.map((design) => (
+                  <Card 
+                    key={design.id}
+                    className="group border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer overflow-hidden"
+                    onClick={() => setSelectedDesign(design)}
+                  >
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <div className="space-y-1">
+                        <CardTitle className="text-sm font-medium">
+                          {design.subject} - {design.unit}
+                        </CardTitle>
+                        {getStatusBadge(design.status)}
+                      </div>
+                      <BookOpen className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div>
+                          <div className="text-xl font-bold group-hover:text-primary transition-colors">
+                            {design.title}
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                            {design.description}
+                          </p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">完成进度</span>
+                            <span className="font-medium">{design.progress}%</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full ${getProgressColor(design.progress)} transition-all duration-300`}
+                              style={{ width: `${design.progress}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="pt-2 flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">
+                            最后修改：{design.lastModified}
+                          </span>
+                          <Button variant="ghost" size="sm" className="hover:bg-primary/5">
+                            查看详情 →
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent value="draft" className="space-y-4">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {/* 草稿箱内容 */}
+              </div>
+            </TabsContent>
+            <TabsContent value="published" className="space-y-4">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {/* 已发布内容 */}
+              </div>
+            </TabsContent>
+            <TabsContent value="archived" className="space-y-4">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {/* 已归档内容 */}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
       
       <TeachingPlanCarousel
         isOpen={selectedDesign !== null}
         onClose={() => setSelectedDesign(null)}
         design={selectedDesign!}
       />
-    </SidebarProvider>
+    </div>
   );
 } 

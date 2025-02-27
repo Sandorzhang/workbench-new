@@ -41,6 +41,28 @@ export const db = factory({
     description: String,
     participants: Array,
   },
+  // 导师模型
+  mentor: {
+    id: primaryKey(String),
+    name: String,
+    email: String,
+    avatar: String,
+    title: String,
+    phone: String,
+    bio: String,
+    specialties: Array,
+    isAssigned: Boolean, // 是否已分配学生
+    students: Array, // 指导的学生列表
+  },
+  // 学生模型 (用于导师-学生关系)
+  student: {
+    id: primaryKey(String),
+    name: String,
+    email: String,
+    avatar: String,
+    grade: String,
+    major: String,
+  },
   // 可以添加更多模型
 });
 
@@ -171,6 +193,74 @@ export function seedDb() {
     type: 'holiday',
     description: '清明节假期',
     participants: [],
+  });
+  
+  // 添加导师示例数据
+  db.mentor.create({
+    id: '1',
+    name: '王教授',
+    email: 'wangprof@school.edu',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=wang',
+    title: '教授',
+    phone: '13800138000',
+    bio: '在人工智能领域有超过15年的教学和研究经验，曾主持多项国家级科研项目。',
+    specialties: ['人工智能'],
+    isAssigned: false,
+    students: [],
+  });
+  
+  db.mentor.create({
+    id: '2',
+    name: '李教授',
+    email: 'liprof@school.edu',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=li',
+    title: '教授',
+    phone: '13900139000',
+    bio: '数学博士，专注于高等数学的教学研究，教学风格严谨而有趣。',
+    specialties: ['高等数学'],
+    isAssigned: false,
+    students: [],
+  });
+  
+  db.mentor.create({
+    id: '3',
+    name: '赵博士',
+    email: 'zhaophd@school.edu',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=zhao',
+    title: '博士',
+    phone: '13800138000',
+    bio: '年轻有为的物理学者，研究领域涵盖量子力学和天体物理学。',
+    specialties: ['量子力学'],
+    isAssigned: false,
+    students: [],
+  });
+  
+  // 添加学生示例数据
+  db.student.create({
+    id: '1',
+    name: '小明',
+    email: 'xiaoming@student.edu',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ming',
+    grade: '大三',
+    major: '计算机科学',
+  });
+  
+  db.student.create({
+    id: '2',
+    name: '小华',
+    email: 'xiaohua@student.edu',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=hua',
+    grade: '大二',
+    major: '数学',
+  });
+  
+  db.student.create({
+    id: '3',
+    name: '小芳',
+    email: 'xiaofang@student.edu',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=fang',
+    grade: '大四',
+    major: '物理学',
   });
   
   // 添加更多初始数据...
